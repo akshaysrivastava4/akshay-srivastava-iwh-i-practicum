@@ -1,47 +1,36 @@
 html
-  head 
-    title= `${title}`
-    meta(name="viewport", content="width=device-width, initial-scale=1")
-    link(rel="stylesheet", href="/css/style.css")
-  body    
-    h1= data ? 'Update Favorite Anime' : 'Add Favorite Anime'
-    a(href="/", class="link") Return to the Homepage
-
-    form(action= data ? `/update-cobj/${data.properties.hs_object_id}` : "/update-cobj", method="POST")
-      table
-        tbody
-          tr
-            td
-              label(for="name_") Name:
-                span.required *
-            td
-              input(
-                type="text", 
-                name="name", 
-                required, 
-                class="rounded-input", 
-                value= data ? data.properties.name : ''
-              )
-          tr
-            td
-              label(for="favorite_character") Favorite Character:
-                span.required *
-            td
-              input(
-                type="text", 
-                name="favorite_character", 
-                required, 
-                class="rounded-input", 
-                value= data ? data.properties.favorite_character : ''
-              )
-          tr
-            td
-              label(for="description_") Description:
-            td
-              textarea(
-                name="description", 
-                id="description", 
-                class="rounded-input"
-              )= data ? data.properties.description : ''
-      button(type="submit", class="rounded-button")= data ? 'Update' : 'Add'
- 
+    head 
+        title= `${title}`
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="/css/style.css")
+        link(rel='stylesheet', href='https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css')
+        script(src='https://code.jquery.com/jquery-3.6.0.min.js')
+        script(src='https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js')
+    body    
+        h1 Favorite Anime
+        a(href="/update-cobj", class="link") Add to this table
+        br
+        div
+            table#animeTable(border="1")
+                thead
+                    tr
+                        th Name
+                        th Favorite Character
+                        th Description
+                        th Edit
+                tbody
+                    each anime in data
+                        tr
+                            td= anime.properties.name
+                            td= anime.properties.favorite_character
+                            td= anime.properties.description
+                            td
+                                a(href=`/update-cobj/${anime.properties.hs_object_id}`, title="Edit")
+                                    i.fa.fa-edit(style="color: green; cursor: pointer; margin-right: 10px;")
+                                a(href=`/delete-cobj/${anime.properties.hs_object_id}`, title="Delete", onclick="return confirm('Are you sure you want to delete this?')")
+                                    i.fa.fa-trash(style="color: red; cursor: pointer;")
+            script.
+                $(document).ready(function() {
+                    $('#animeTable').DataTable();
+                });
